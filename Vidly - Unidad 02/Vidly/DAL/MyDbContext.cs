@@ -14,6 +14,8 @@ namespace Vidly.DAL
 
         public DbSet<MembershipType> MembershipTypes { get; set; }
 
+        public DbSet<Genre> Genres { get; set; }
+
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
         {
 
