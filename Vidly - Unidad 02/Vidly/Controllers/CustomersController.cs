@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Vidly.DAL;
 using Vidly.Models;
+using Vidly.ViewModels;
 
 namespace Vidly.Controllers
 {
@@ -50,6 +51,53 @@ namespace Vidly.Controllers
 
         }
 
+        public ActionResult New()
+        {
+            var membershipTypes = _ctx.MembershipTypes.ToList();
+            CustomerFormViewModel customervm = new CustomerFormViewModel();
+            customervm.MembershipTypes = membershipTypes;
+
+            return View("CustomerForm", customervm);
+        }
+
+        [HttpPost]
+        public ActionResult Save(Customer customer)
+        {
+            if (customer.Id == 0) { 
+            _ctx.Customers.Add(customer);
+           
+            }
+            else
+            {
+                var customerInDb = _ctx.Customers.Single(c => c.Id == customer.Id);
+                customerInDb.Name = customer.Name;
+                customerInDb.BirthDate = customer.BirthDate;
+                customerInDb.MembershipTypeId = customer.MembershipTypeId;
+                customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
+
+            }
+            _ctx.SaveChanges();
+            return RedirectToAction(nameof(List));
+        }
+
+        public ActionResult Edit(int id)
+        {
+            var customer = _ctx.Customers.SingleOrDefault(c => c.Id == id);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var vm = new CustomerFormViewModel
+                {
+                    Customer = customer,
+                    MembershipTypes = _ctx.MembershipTypes.ToList()
+                };
+                return View("CustomerForm", vm);
+            }
+        }
 
     }
 }
