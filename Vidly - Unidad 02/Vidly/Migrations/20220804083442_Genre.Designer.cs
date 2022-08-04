@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vidly.DAL;
 
 namespace Vidly.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220804083442_Genre")]
+    partial class Genre
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,21 +91,11 @@ namespace Vidly.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateAdded")
-                        .HasColumnType("datetime2");
-
                     b.Property<byte>("GenreId")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("NumberInStock")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

@@ -1,24 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Vidly.DAL;
 using Vidly.Models;
 
 namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
-        private List<Movie> _movies = new List<Movie>();
-        private Movie m1 = new Movie{ Name = "Shrek", Id = 1, Imdb= "https://www.imdb.com/title/tt0126029/" };
-        private Movie m2 = new Movie { Name = "Wall-E", Id = 2, Imdb= "https://www.imdb.com/title/tt0910970/" };
 
-        public MoviesController()
+        private MyDbContext _ctx;
+
+        public MoviesController(MyDbContext context)
         {
-            _movies.Add(m1);
-            _movies.Add(m2);
+            _ctx = context;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            _ctx.Dispose();
+        }
 
         public ActionResult Index()
         {
@@ -27,7 +31,27 @@ namespace Vidly.Controllers
 
         public ActionResult List()
         {
-            return View(_movies);
+            List<Movie> movies = _ctx.Movies.Include(m => m.Genre).ToList();
+            
+            return View(movies);
+        }
+
+        [Route("Movies/Details/{id}")]
+        public ActionResult Detail(int id)
+        {
+            var movie = _ctx.Movies.Include(m => m.Genre).SingleOrDefault(m => m.Id == id);
+
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return View(movie);
+            }
+
+
         }
     }
 }

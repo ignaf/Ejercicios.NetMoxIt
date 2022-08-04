@@ -11,10 +11,12 @@
 {
     <table class="table table-bordered table-hover">
         <th>Movie</th>
+        <th>Genre</th>
         @foreach (var movie in Model)
         {
             <tr>
-                <td><a href="@movie.Imdb">@movie.Name</a></td>
+                <td><a href="~/movies/details/@movie.Id">@movie.Name</a></td>
+                <td>@movie.Genre.Name</td>
             </tr>
         }
 
