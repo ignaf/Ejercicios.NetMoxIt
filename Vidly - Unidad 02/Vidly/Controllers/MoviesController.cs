@@ -9,29 +9,25 @@ namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
-        //GET: Movies/Random
-        public IActionResult Random()
-        {
-            var movie = new Movie() { Name = "Shrek" };
+        private List<Movie> _movies = new List<Movie>();
+        private Movie m1 = new Movie{ Name = "Shrek", Id = 1, Imdb= "https://www.imdb.com/title/tt0126029/" };
+        private Movie m2 = new Movie { Name = "Wall-E", Id = 2, Imdb= "https://www.imdb.com/title/tt0910970/" };
 
-            return View(movie);
+        public MoviesController()
+        {
+            _movies.Add(m1);
+            _movies.Add(m2);
         }
 
-        public ActionResult Edit(int id)
-        {
-            return Content("id= " + id);
-        }
 
-        //movies
         public ActionResult Index()
         {
             return View();
-        }
+        }               
 
-        [Route("Movies/Release/{year}/{month}")]
-        public ActionResult ByReleaseDate(int year, int month)
+        public ActionResult List()
         {
-            return Content(year + "/" + month);
+            return View(_movies);
         }
     }
 }
