@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace Vidly.Controllers
         [Route("Customers")]
         public ActionResult List()
         {
-            var customers = _ctx.Customers.ToList();
+            var customers = _ctx.Customers.Include(c=>c.MembershipType).ToList();
 
             return View(customers);
         }
