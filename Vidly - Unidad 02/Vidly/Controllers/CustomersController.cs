@@ -9,18 +9,46 @@ namespace Vidly.Controllers
 {
     public class CustomersController : Controller
     {
-        
+        private List<Customer> _customers = new List<Customer>();
+        private Customer c1 = new Customer { Name = "John Smith", Id = 1 };
+        private Customer c2 = new Customer { Name = "Mary Williams", Id=2 };       
+
+        public CustomersController()
+        {
+            _customers.Add(c1);
+            _customers.Add(c2);
+
+        }
+
         [Route("Customers")]
         public ActionResult List()
         {
-            List<Customer> customers = new List<Customer>();
-            Customer c1 = new Customer { Name = "John Smith" };
-            Customer c2 = new Customer { Name = "Mary Williams" };
-            customers.Add(c1);
-            customers.Add(c2);
-
-            return View(customers);
+            return View(_customers);
         }
+
+        [Route("Customers/Details/{id}")]
+        public ActionResult Detail(int id)
+        {
+            Customer customerDetail = null;
+            foreach(var customer in _customers)
+            {
+                if(customer.Id == id)
+                {
+                    customerDetail = customer;
+                }
+            }
+
+            if (customerDetail == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return View(customerDetail);
+            }
+
+            
+        }       
 
       
     }
