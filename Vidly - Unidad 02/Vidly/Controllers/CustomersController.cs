@@ -27,10 +27,8 @@ namespace Vidly.Controllers
 
         [Route("Customers")]
         public ActionResult List()
-        {
-            var customers = _ctx.Customers.Include(c=>c.MembershipType).ToList();
-
-            return View(customers);
+        {            
+            return View();
         }
 
         [Route("Customers/Details/{id}")]
