@@ -73,11 +73,19 @@ namespace Vidly.Controllers.API
             {
                 return NotFound();
             }
-          //  _mapper.Map<CustomerDto, Customer>(customerDto, customerInDb);
-            customerInDb.Name = customerDto.Name;
-            customerInDb.MembershipTypeId = customerDto.MembershipTypeId;
-            customerInDb.BirthDate = customerDto.BirthDate;
-            customerInDb.IsSubscribedToNewsletter = customerDto.IsSubscribedToNewsletter;
+
+
+            if (customerDto.MembershipTypeId != 0) {
+                
+                _mapper.Map<CustomerDto, Customer>(customerDto, customerInDb);
+            }
+            else
+            {
+                customerDto.MembershipTypeId = customerInDb.MembershipTypeId;
+
+                _mapper.Map<CustomerDto, Customer>(customerDto, customerInDb);
+                
+            }
 
             _ctx.SaveChanges();
             return Ok();
@@ -97,6 +105,6 @@ namespace Vidly.Controllers.API
             return Ok();
         }
 
- 
+
     }
 }
