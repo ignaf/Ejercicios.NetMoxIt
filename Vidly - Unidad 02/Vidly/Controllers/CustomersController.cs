@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ using Vidly.ViewModels;
 
 namespace Vidly.Controllers
 {
+    // [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
+    [Authorize(Roles =RoleName.CanManageMovies)]
     public class CustomersController : Controller
     {
 
@@ -48,7 +51,6 @@ namespace Vidly.Controllers
 
 
         }
-
         public ActionResult New()
         {
             var membershipTypes = _ctx.MembershipTypes.ToList();

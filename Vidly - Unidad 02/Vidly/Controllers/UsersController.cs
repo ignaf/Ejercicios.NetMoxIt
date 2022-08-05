@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +24,7 @@ namespace Vidly.Controllers
         }
 
         // GET: Users
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public async Task<IActionResult> Index()
         {
             var myDbContext = _context.Users.Include(u => u.Role);
@@ -27,6 +32,7 @@ namespace Vidly.Controllers
         }
 
         // GET: Users/Details/5
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -71,6 +77,7 @@ namespace Vidly.Controllers
         }
 
         // GET: Users/Edit/5
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -92,6 +99,7 @@ namespace Vidly.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,PhoneNumber,DriverLicense,Email,Password,RoleId")] User user)
         {
             if (id != user.Id)
@@ -124,6 +132,7 @@ namespace Vidly.Controllers
         }
 
         // GET: Users/Delete/5
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -145,6 +154,7 @@ namespace Vidly.Controllers
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -156,6 +166,45 @@ namespace Vidly.Controllers
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(string email, string password)
+        {
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(m => m.Email==email && m.Password == password);
+
+            if (user != null)
+            {
+                string rol = user.Role.Name;
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.Name),
+                    new Claim("Email", user.Email),
+                    new Claim("Id", user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, rol)
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                return RedirectToAction("List", "Movies");
+            }
+            ViewBag.Msg = "Wrong email or password";
+            return View();
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction(nameof(Login));
         }
     }
 }

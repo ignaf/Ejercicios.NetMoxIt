@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using Vidly.ViewModels;
 
 namespace Vidly.Controllers
 {
+    [Authorize(Roles = RoleName.CanManageMovies)]
     public class MoviesController : Controller
     {
 
@@ -30,6 +32,7 @@ namespace Vidly.Controllers
             return View();
         }               
 
+      
         public ActionResult List()
         {
                        
@@ -37,6 +40,7 @@ namespace Vidly.Controllers
         }
 
         [Route("Movies/Details/{id}")]
+        
         public ActionResult Detail(int id)
         {
             var movie = _ctx.Movies.Include(m => m.Genre).SingleOrDefault(m => m.Id == id);
