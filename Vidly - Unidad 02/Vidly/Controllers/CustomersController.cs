@@ -11,8 +11,7 @@ using Vidly.ViewModels;
 
 namespace Vidly.Controllers
 {
-    // [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
-    [Authorize(Roles =RoleName.CanManageMovies)]
+    [Authorize]
     public class CustomersController : Controller
     {
 
@@ -29,15 +28,17 @@ namespace Vidly.Controllers
         }
 
         [Route("Customers")]
+        [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
         public ActionResult List()
-        {            
+        {
             return View();
         }
 
         [Route("Customers/Details/{id}")]
+        [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
         public ActionResult Detail(int id)
         {
-            var customer = _ctx.Customers.Include(c=>c.MembershipType).SingleOrDefault(c => c.Id == id);
+            var customer = _ctx.Customers.Include(c => c.MembershipType).SingleOrDefault(c => c.Id == id);
 
 
             if (customer == null)
@@ -51,6 +52,7 @@ namespace Vidly.Controllers
 
 
         }
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult New()
         {
             var membershipTypes = _ctx.MembershipTypes.ToList();
@@ -58,14 +60,15 @@ namespace Vidly.Controllers
             {
                 MembershipTypes = membershipTypes,
                 Customer = new Customer()
-            };          
-            
+            };
+
 
             return View("CustomerForm", customervm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult Save(Customer customer)
         {
             if (!ModelState.IsValid)
@@ -75,12 +78,13 @@ namespace Vidly.Controllers
                     Customer = customer,
                     MembershipTypes = _ctx.MembershipTypes.ToList()
                 };
-            return View("CustomerForm", vm);
+                return View("CustomerForm", vm);
             }
-            
-            if (customer.Id == 0) { 
-            _ctx.Customers.Add(customer);
-           
+
+            if (customer.Id == 0)
+            {
+                _ctx.Customers.Add(customer);
+
             }
             else
             {
@@ -95,6 +99,7 @@ namespace Vidly.Controllers
             return RedirectToAction(nameof(List));
         }
 
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult Edit(int id)
         {
             var customer = _ctx.Customers.SingleOrDefault(c => c.Id == id);

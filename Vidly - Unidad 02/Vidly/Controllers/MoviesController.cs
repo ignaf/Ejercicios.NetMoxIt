@@ -11,7 +11,7 @@ using Vidly.ViewModels;
 
 namespace Vidly.Controllers
 {
-    [Authorize(Roles = RoleName.CanManageMovies)]
+
     public class MoviesController : Controller
     {
 
@@ -27,20 +27,23 @@ namespace Vidly.Controllers
             _ctx.Dispose();
         }
 
+        [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
         public ActionResult Index()
         {
             return View();
-        }               
+        }
 
-      
+
+        [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
         public ActionResult List()
         {
-                       
+
             return View();
         }
 
         [Route("Movies/Details/{id}")]
-        
+        [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
+
         public ActionResult Detail(int id)
         {
             var movie = _ctx.Movies.Include(m => m.Genre).SingleOrDefault(m => m.Id == id);
@@ -56,7 +59,7 @@ namespace Vidly.Controllers
             }
 
         }
-
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult New()
         {
             var genres = _ctx.Genres.ToList();
@@ -68,9 +71,10 @@ namespace Vidly.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult Save(Movie movie)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var vm = new MovieFormViewModel
                 {
@@ -78,7 +82,7 @@ namespace Vidly.Controllers
                     Genres = _ctx.Genres.ToList()
                 };
                 return View("MovieForm", vm);
-            }            
+            }
             if (movie.Id == 0)
             {
                 _ctx.Movies.Add(movie);
@@ -97,6 +101,7 @@ namespace Vidly.Controllers
             return RedirectToAction(nameof(List));
         }
 
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult Edit(int id)
         {
             var movie = _ctx.Movies.SingleOrDefault(m => m.Id == id);

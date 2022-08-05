@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace Vidly.Controllers.API
 
         //GET /api/movies
         [HttpGet]
+        [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
         public ActionResult<MovieDto> GetMovies()
         {
             var movieDtos = _ctx.Movies
@@ -38,6 +40,7 @@ namespace Vidly.Controllers.API
 
         //GET /api/movies/1
         [HttpGet("{id}")]
+        [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
         public ActionResult<MovieDto> GetMovie(int id)
         {
             var movie = _ctx.Movies.SingleOrDefault(m => m.Id == id);
@@ -50,6 +53,7 @@ namespace Vidly.Controllers.API
 
         //POST /api/movies
         [HttpPost]
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult<MovieDto> CreateMovie(MovieDto movieDto)
         {
             if (!ModelState.IsValid)
@@ -67,6 +71,7 @@ namespace Vidly.Controllers.API
 
         //PUT /api/movies/1
         [HttpPut("{id}")]
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public IActionResult UpdateMovie(int id, MovieDto movieDto)
         {
             if (!ModelState.IsValid)
@@ -86,6 +91,7 @@ namespace Vidly.Controllers.API
 
         //DELETE /api/movies/1
         [HttpDelete("{id}")]
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult<Customer> DeleteMovie(int id)
         {
             var movieInDb = _ctx.Movies.SingleOrDefault(m => m.Id == id);

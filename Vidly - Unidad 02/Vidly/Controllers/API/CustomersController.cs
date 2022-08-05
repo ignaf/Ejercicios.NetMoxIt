@@ -9,6 +9,7 @@ using Vidly.DAL;
 using Vidly.DTOs;
 using Vidly.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Vidly.Controllers.API
 {
@@ -27,6 +28,7 @@ namespace Vidly.Controllers.API
 
         //GET /api/customers
         [HttpGet]
+        [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
         public ActionResult<CustomerDto> GetCustomers()
         {
             
@@ -39,6 +41,7 @@ namespace Vidly.Controllers.API
 
         //GET /api/customers/1
         [HttpGet("{id}")]
+        [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
         public ActionResult<CustomerDto> GetCustomer(int id)
         {
             var customer = _ctx.Customers.SingleOrDefault(c => c.Id == id);
@@ -51,6 +54,7 @@ namespace Vidly.Controllers.API
 
         //POST /api/customers
         [HttpPost]
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult<CustomerDto> CreateCustomer(CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
@@ -68,6 +72,7 @@ namespace Vidly.Controllers.API
 
         //PUT /api/customers/1
         [HttpPut("{id}")]
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public IActionResult UpdateCostumer(int id, CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
@@ -99,6 +104,7 @@ namespace Vidly.Controllers.API
 
         //DELETE /api/customers/1
         [HttpDelete("{id}")]
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult<Customer> DeleteCustomer(int id)
         {
             var customerInDb = _ctx.Customers.SingleOrDefault(c => c.Id == id);

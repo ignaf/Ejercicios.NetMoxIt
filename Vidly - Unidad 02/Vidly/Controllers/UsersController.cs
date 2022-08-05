@@ -23,7 +23,7 @@ namespace Vidly.Controllers
             _context = context;
         }
 
-        // GET: Users
+        // GET: Users       
         [Authorize(Roles = RoleName.CanManageMovies)]
         public async Task<IActionResult> Index()
         {
@@ -72,7 +72,7 @@ namespace Vidly.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            
+
             return View(user);
         }
 
@@ -178,7 +178,7 @@ namespace Vidly.Controllers
         {
             var user = await _context.Users
                 .Include(u => u.Role)
-                .FirstOrDefaultAsync(m => m.Email==email && m.Password == password);
+                .FirstOrDefaultAsync(m => m.Email == email && m.Password == password);
 
             if (user != null)
             {
