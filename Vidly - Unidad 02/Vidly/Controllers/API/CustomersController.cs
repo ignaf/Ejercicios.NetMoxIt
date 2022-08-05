@@ -61,7 +61,7 @@ namespace Vidly.Controllers.API
         }
 
         //PUT /api/customers/1
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult UpdateCostumer(int id, CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
@@ -73,14 +73,18 @@ namespace Vidly.Controllers.API
             {
                 return NotFound();
             }
-            _mapper.Map<CustomerDto, Customer>(customerDto, customerInDb);            
+          //  _mapper.Map<CustomerDto, Customer>(customerDto, customerInDb);
+            customerInDb.Name = customerDto.Name;
+            customerInDb.MembershipTypeId = customerDto.MembershipTypeId;
+            customerInDb.BirthDate = customerDto.BirthDate;
+            customerInDb.IsSubscribedToNewsletter = customerDto.IsSubscribedToNewsletter;
 
             _ctx.SaveChanges();
             return Ok();
         }
 
         //DELETE /api/customers/1
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ActionResult<Customer> DeleteCustomer(int id)
         {
             var customerInDb = _ctx.Customers.SingleOrDefault(c => c.Id == id);
