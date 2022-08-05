@@ -15,11 +15,15 @@ namespace Vidly
             CreateMap<Customer, CustomerDto>();
             CreateMap<CustomerDto, Customer>()
                 .ForMember(c => c.Id, opt => opt.Ignore())
-                .ForMember(c => c.MembershipTypeId, opt => opt.Ignore());
+                .ForMember(c => c.MembershipTypeId, opt => opt.Ignore());            
 
             CreateMap<Movie, MovieDto>();
             CreateMap<MovieDto, Movie>()
-                .ForMember(m => m.Id, opt => opt.Ignore()); 
+                .ForMember(m => m.Id, opt => opt.Ignore());
+
+            CreateMap<MembershipType, MembershipTypeDto>();
+            CreateMap<MembershipTypeDto, MembershipType>();
+
 
         }
     }

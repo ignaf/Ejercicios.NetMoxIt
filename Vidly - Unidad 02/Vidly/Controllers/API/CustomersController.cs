@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Vidly.DAL;
 using Vidly.DTOs;
 using Vidly.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vidly.Controllers.API
 {
@@ -26,9 +27,14 @@ namespace Vidly.Controllers.API
 
         //GET /api/customers
         [HttpGet]
-        public IEnumerable<CustomerDto> GetCustomers()
+        public ActionResult<CustomerDto> GetCustomers()
         {
-            return _ctx.Customers.ToList().Select(_mapper.Map<Customer, CustomerDto>);
+            //return _ctx.Customers.ToList().Select(_mapper.Map<Customer, CustomerDto>);
+            var customerDtos = _ctx.Customers
+                .Include(c => c.MembershipType)
+                .ToList()
+                .Select(_mapper.Map<Customer, CustomerDto>);
+            return Ok(customerDtos);
         }
 
         //GET /api/customers/1
