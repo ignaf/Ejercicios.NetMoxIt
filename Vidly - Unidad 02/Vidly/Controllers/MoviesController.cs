@@ -32,9 +32,8 @@ namespace Vidly.Controllers
 
         public ActionResult List()
         {
-            List<Movie> movies = _ctx.Movies.Include(m => m.Genre).ToList();
-            
-            return View(movies);
+                       
+            return View();
         }
 
         [Route("Movies/Details/{id}")]

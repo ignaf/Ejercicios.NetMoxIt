@@ -29,7 +29,7 @@ namespace Vidly.Controllers.API
         [HttpGet]
         public ActionResult<CustomerDto> GetCustomers()
         {
-            //return _ctx.Customers.ToList().Select(_mapper.Map<Customer, CustomerDto>);
+            
             var customerDtos = _ctx.Customers
                 .Include(c => c.MembershipType)
                 .ToList()
