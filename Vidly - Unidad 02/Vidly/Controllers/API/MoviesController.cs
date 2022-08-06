@@ -29,10 +29,15 @@ namespace Vidly.Controllers.API
         //GET /api/movies
         [HttpGet]
         [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
-        public ActionResult<MovieDto> GetMovies()
+        public ActionResult<MovieDto> GetMovies(string query = null)
         {
-            var movieDtos = _ctx.Movies
-                 .Include(m => m.Genre)
+            IQueryable<Movie> moviesQuery = _ctx.Movies
+                 .Include(m => m.Genre);
+            if (!String.IsNullOrWhiteSpace(query))
+            {
+                moviesQuery = moviesQuery.Where(c => c.Name.Contains(query));
+            }
+            var movieDtos= moviesQuery            
                  .ToList()
                  .Select(_mapper.Map<Movie, MovieDto>);
             return Ok(movieDtos);
