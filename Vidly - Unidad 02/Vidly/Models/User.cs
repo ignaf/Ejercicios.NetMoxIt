@@ -14,6 +14,7 @@ namespace Vidly.Models
         public string Name { get; set; }
 
         [Required]
+        [MaxLength(50)]
         public int PhoneNumber { get; set; }
 
         [Required]

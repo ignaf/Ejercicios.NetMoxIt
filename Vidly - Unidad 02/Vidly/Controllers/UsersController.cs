@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Vidly.DAL;
 using Vidly.Models;
+using Vidly.ViewModels;
 
 namespace Vidly.Controllers
 {
@@ -54,49 +55,54 @@ namespace Vidly.Controllers
         // GET: Users/Create
         public IActionResult Create()
         {
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Id");
-            return View();
+            var roles = _context.Roles.ToList();
+            UserFormViewModel uservm = new UserFormViewModel();
+            uservm.Roles = roles;
+            return View("UserForm", uservm);
         }
 
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Users/Create        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,PhoneNumber,DriverLicense,Email,Password")] User user)
+        public async Task<IActionResult> Create(User user)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                var vm = new UserFormViewModel
+                {
+                    User = user,
+                    Roles = _context.Roles.ToList()
+                };
+                return View("UserForm", vm);
+            }
+            else
             {
                 user.RoleId = 2;
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            return View(user);
         }
 
         // GET: Users/Edit/5
         [Authorize(Roles = RoleName.CanManageMovies)]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Id", user.RoleId);
-            return View(user);
+
+            var vm = new UserFormViewModel
+            {
+                User = user,
+                Roles = _context.Roles.ToList()
+            };
+            return View(vm);
         }
 
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Users/Edit/5        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = RoleName.CanManageMovies)]
@@ -205,6 +211,11 @@ namespace Vidly.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction(nameof(Login));
+        }
+
+        public ActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Vidly
                 {
                     option.LoginPath = "/Users/Login";
                     option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-                    option.AccessDeniedPath = "/Users/Login";
+                    option.AccessDeniedPath = "/Users/AccessDenied";
                 });
         }
 

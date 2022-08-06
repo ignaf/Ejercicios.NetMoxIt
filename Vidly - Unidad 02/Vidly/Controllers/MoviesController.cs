@@ -37,8 +37,11 @@ namespace Vidly.Controllers
         [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
         public ActionResult List()
         {
-
-            return View();
+            if (User.IsInRole(RoleName.ReadOnlyUser))
+            {
+                return View("ReadOnlyList");
+            }
+            return View("List");
         }
 
         [Route("Movies/Details/{id}")]
