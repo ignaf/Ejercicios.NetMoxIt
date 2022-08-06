@@ -89,3 +89,8 @@
     .Typeahead-selectable + .Typeahead-selectable {
         border-top: 1px solid #ccd6dd;
     }
+
+
+.tt-container {
+    position: relative;
+}

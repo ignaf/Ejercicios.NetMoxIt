@@ -29,11 +29,18 @@ namespace Vidly.Controllers.API
         //GET /api/customers
         [HttpGet]
         [Authorize(Roles = RoleName.CanManageMovies + "," + RoleName.ReadOnlyUser)]
-        public ActionResult<CustomerDto> GetCustomers()
+        public ActionResult<CustomerDto> GetCustomers(string query = null)
         {
-            
-            var customerDtos = _ctx.Customers
-                .Include(c => c.MembershipType)
+
+            IQueryable<Customer> customersQuery = _ctx.Customers
+                .Include(c => c.MembershipType);
+
+            if (!String.IsNullOrWhiteSpace(query))
+            {
+                customersQuery = customersQuery.Where(c => c.Name.Contains(query));
+
+            }
+            var customerDtos = customersQuery
                 .ToList()
                 .Select(_mapper.Map<Customer, CustomerDto>);
             return Ok(customerDtos);
@@ -86,8 +93,9 @@ namespace Vidly.Controllers.API
             }
 
 
-            if (customerDto.MembershipTypeId != 0) {
-                
+            if (customerDto.MembershipTypeId != 0)
+            {
+
                 _mapper.Map<CustomerDto, Customer>(customerDto, customerInDb);
             }
             else
@@ -95,7 +103,7 @@ namespace Vidly.Controllers.API
                 customerDto.MembershipTypeId = customerInDb.MembershipTypeId;
 
                 _mapper.Map<CustomerDto, Customer>(customerDto, customerInDb);
-                
+
             }
 
             _ctx.SaveChanges();
