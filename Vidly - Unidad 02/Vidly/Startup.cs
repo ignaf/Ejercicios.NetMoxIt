@@ -53,6 +53,11 @@ namespace Vidly
                     option.LoginPath = "/Users/Login";
                     option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                     option.AccessDeniedPath = "/Users/AccessDenied";
+                })                
+                .AddFacebook(option =>
+                {
+                    option.AppId = "990535361593945";
+                    option.AppSecret = "8adc2ec281370137cb8b8bdc54825462";
                 });
 
             //services.AddAuthentication(options =>
