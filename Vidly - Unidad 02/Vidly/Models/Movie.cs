@@ -28,6 +28,8 @@ namespace Vidly.Models
         [Range(1,20)]
         public int NumberInStock { get; set; }
 
+        public int NumberAvailable { get; set; }
+
 
 
 

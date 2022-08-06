@@ -19,6 +19,7 @@ namespace Vidly.DAL
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Rental> Rentals { get; set; }
 
 
 
