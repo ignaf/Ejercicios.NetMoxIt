@@ -33,11 +33,20 @@ namespace Vidly.Controllers.API
         {
             IQueryable<Movie> moviesQuery = _ctx.Movies
                  .Include(m => m.Genre);
-            if (!String.IsNullOrWhiteSpace(query))
+
+            foreach (var movie in moviesQuery)
             {
-                moviesQuery = moviesQuery.Where(c => c.Name.Contains(query));
+                if (movie.NumberAvailable != 0)
+                {
+                    if (!String.IsNullOrWhiteSpace(query))
+                    {
+                        moviesQuery = moviesQuery.Where(c => c.Name.Contains(query));
+                    }
+                    moviesQuery = moviesQuery.Where(c => c.NumberAvailable != 0);
+                }
+                
             }
-            var movieDtos= moviesQuery            
+            var movieDtos = moviesQuery
                  .ToList()
                  .Select(_mapper.Map<Movie, MovieDto>);
             return Ok(movieDtos);
@@ -109,6 +118,6 @@ namespace Vidly.Controllers.API
             return Ok();
         }
 
- 
+
     }
 }
