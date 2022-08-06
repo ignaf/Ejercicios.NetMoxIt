@@ -15,19 +15,19 @@ namespace Vidly.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RentalController : ControllerBase
+    public class RentalsController : ControllerBase
     {
         private MyDbContext _ctx;
         private IMapper _mapper;
 
-        public RentalController(MyDbContext context, IMapper mapper)
+        public RentalsController(MyDbContext context, IMapper mapper)
         {
             _ctx = context;
             _mapper = mapper;
         }
 
         [HttpPost]
-        public ActionResult<RentalDto> CreateNewRentals(RentalDto rentalDto)
+        public ActionResult<RentalDto> CreateRentals(RentalDto rentalDto)
         {
 
             var customer = _ctx.Customers.Single(m => m.Id == rentalDto.CustomerId);
