@@ -32,20 +32,15 @@ namespace Vidly.Controllers.API
         public ActionResult<MovieDto> GetMovies(string query = null)
         {
             IQueryable<Movie> moviesQuery = _ctx.Movies
-                 .Include(m => m.Genre);
+                 .Include(m => m.Genre)
+                 .Where(m => m.NumberAvailable > 0);
 
-            foreach (var movie in moviesQuery)
+            if (!String.IsNullOrWhiteSpace(query))
             {
-                if (movie.NumberAvailable != 0)
-                {
-                    if (!String.IsNullOrWhiteSpace(query))
-                    {
-                        moviesQuery = moviesQuery.Where(c => c.Name.Contains(query));
-                    }
-                    moviesQuery = moviesQuery.Where(c => c.NumberAvailable != 0);
-                }
-                
-            }
+                moviesQuery = moviesQuery.Where(c => c.Name.Contains(query));
+            }         
+
+
             var movieDtos = moviesQuery
                  .ToList()
                  .Select(_mapper.Map<Movie, MovieDto>);
