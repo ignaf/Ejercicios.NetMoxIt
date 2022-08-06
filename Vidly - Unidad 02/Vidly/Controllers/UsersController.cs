@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -232,6 +233,7 @@ namespace Vidly.Controllers
                     claim.Type,
                     claim.Value
                 });
+            
             return Json(claims);
         }
 
