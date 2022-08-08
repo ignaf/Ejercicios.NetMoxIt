@@ -9,7 +9,9 @@ namespace Vidly.DTOs
 {
     public class RentalDto
     {
+        [Required]
         public int CustomerId { get; set; }
+        [Required]
         public List<int> MovieIds { get; set; }
     }
 }

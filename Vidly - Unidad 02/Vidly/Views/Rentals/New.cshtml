@@ -29,7 +29,7 @@
 </form>
 
 @section scripts{
-
+    <script src="~/lib/jquery-validation/dist/additional-methods.js"></script>
     <script>
         $(document).ready(function () {
             var vm = {
@@ -76,20 +76,24 @@
                     vm.movieIds.push(movie.id);
                 });
 
-            $('#newRental').submit(function (e) {
-                e.preventDefault();
-                $.ajax({
-                    url: "/api/Rentals",
-                    method: "post",
-                    data: vm
-                })
-                    .done(function () {
-                        toastr.success("Rentals successfully recorded.")
+            $("#newRental").validate({
+                submitHandler: function () {
+                    e.preventDefault();
+                    $.ajax({
+                        url: "/api/Rentals",
+                        method: "post",
+                        data: vm
                     })
-                    .fail(function () {
-                        toastr.error("Something unexpected happened.")
-                    });
-            });
+                        .done(function () {
+                            toastr.success("Rentals successfully recorded.")
+                        })
+                        .fail(function () {
+                            toastr.error("Something unexpected happened.")
+                        });
+                }
+            });            
         });
+
     </script>
+
 } 
