@@ -78,7 +78,11 @@
 
             $.validator.addMethod("validCustomer", function () {
                 return vm.customerId && vm.customerId != 0;
-            },"Select a valid customer.");
+            }, "Select a valid customer.");
+
+            $.validator.addMethod("atLeastOneMovie", function () {
+                return vm.movieIds.length >= 1;
+            }, "Select at least one movie.")
 
             $("#newRental").validate({
                 submitHandler: function () {
