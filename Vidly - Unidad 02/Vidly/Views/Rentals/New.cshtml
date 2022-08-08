@@ -76,6 +76,10 @@
                     vm.movieIds.push(movie.id);
                 });
 
+            $.validator.addMethod("validCustomer", function () {
+                return vm.customerId && vm.customerId != 0;
+            },"Select a valid customer.");
+
             $("#newRental").validate({
                 submitHandler: function () {
                     e.preventDefault();
