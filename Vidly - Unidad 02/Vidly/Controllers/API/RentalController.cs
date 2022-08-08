@@ -27,16 +27,18 @@ namespace Vidly.Controllers.API
         }
 
         [HttpPost]
-        public ActionResult<RentalDto> CreateRentals(RentalDto rentalDto)
+        public ActionResult<RentalDto> CreateRentals([FromForm]RentalDto rentalDto)
         {
 
             var customer = _ctx.Customers.Single(m => m.Id == rentalDto.CustomerId);
 
-            var movies = _ctx.Movies.Where(m => rentalDto.MovieIds.Contains(m.Id)).ToList();         
-            
+            var movies = _ctx.Movies.Where(
+               m => rentalDto.MovieIds.Contains(m.Id)).ToList();
+
 
             foreach (var movie in movies)
             {
+
                 if (movie.NumberAvailable != 0)
                 {
                     var rental = new Rental
@@ -52,9 +54,8 @@ namespace Vidly.Controllers.API
                 {
                     return BadRequest("Movie is not available.");
                 }
-
-
             }
+            
             _ctx.SaveChanges();
 
             return Ok();

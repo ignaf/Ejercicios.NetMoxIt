@@ -32,10 +32,9 @@
 
     <script>
         $(document).ready(function () {
-            var vm = {               
+            var vm = {
                 movieIds: []
             };
-
             var customers = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -44,7 +43,6 @@
                     wildcard: '%QUERY'
                 }
             });
-
             $('#customer').typeahead({
                 minLength: 3,
                 highlight: true
@@ -56,8 +54,6 @@
                 }).on("typeahead:select", function (e, customer) {
                     vm.customerId = customer.id;
                 });
-
-
             var movies = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -66,10 +62,9 @@
                     wildcard: '%QUERY'
                 }
             });
-
             $('#movie').typeahead({
                 minLength: 3,
-                highlight: true                
+                highlight: true
             },
                 {
                     name: 'movies',
@@ -77,19 +72,15 @@
                     source: movies
                 }).on("typeahead:select", function (e, movie) {
                     $("#movies").append("<li class='list-group-item'>" + movie.name + "</li>");
-
                     $("#movie").typeahead("val", "");
-
                     vm.movieIds.push(movie.id);
                 });
-            
 
             $('#newRental').submit(function (e) {
                 e.preventDefault();
-
                 $.ajax({
                     url: "/api/Rentals",
-                    method:"post",
+                    method: "post",
                     data: vm
                 })
                     .done(function () {
@@ -100,6 +91,5 @@
                     });
             });
         });
-
     </script>
 } 
